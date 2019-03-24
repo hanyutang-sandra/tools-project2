@@ -1,0 +1,24 @@
+{% extends 'sunscreen/base1.html' %}
+
+{% load static %}
+
+{% block title %}Join the course{% endblock %}
+
+{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/join.css' %}">{% endblock %}
+
+{% block content %}
+<div class="left">
+	<div class="intro">
+		<p>In this class, you will learn about how sunscreen works. Rather than the regular learning, we will be using the classic Jigsaw method. Here is what you will do after joining the course:</p>
+		<img>
+	</div>
+</div>
+
+<div class="right">
+	<button class="btn">Join</button>
+	{% if full %}
+	<p>Sorry. The maximum course capacity is 12. The course is currently full. Please come back later to check if there is any seat available.</p>
+	{% endif %}
+</div>
+
+{% endblock %}

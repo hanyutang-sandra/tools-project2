@@ -24,6 +24,10 @@ import sunscreen.views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    re_path(r'^$', sunscreen.views.front)
+    re_path(r'^$', sunscreen.views.front, name='front'),
+
+    re_path(r'^register$', sunscreen.views.register, name='register'),
+    re_path(r'^login$', sunscreen.views.login, name='login'),
+    re_path(r'^join$', sunscreen.views.join, name='join'),
 
 ]

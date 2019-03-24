@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/materialize/materialize.css' %}"  media="screen,projection"/>
+
+    <!-- Customized styles-->
+    {% block css %}{% endblock %}
+  </head>
+  
+  <body>
+      {% block content %}
+      {% endblock %}
+
+    <!--Materialize JavaScript-->
+    <script type="text/javascript" src="{% static 'js/materialize/materialize.js' %}"></script>
+  </body>
+</html>

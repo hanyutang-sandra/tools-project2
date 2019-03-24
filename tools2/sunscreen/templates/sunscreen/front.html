@@ -1,0 +1,28 @@
+{% extends "sunscreen/base1.html" %}
+
+{% load static %}
+
+{% block title %}Welcome to Cooperative Learning{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/front.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="intro">
+	<p>Cooperative Learning</p>
+	<p>How sunscreen works</p>
+</div>
+<div class="button">
+	<a class="btn">Login</a>
+	<br>
+	<a>REGISTER</a>
+</div>
+<div class="animation">
+	<img src="{% static 'site-resources/front-sun.png' %}">
+	<img class="animate1" src="{% static 'site-resources/front-cloud1.png' %}">
+	<img class="animate2" src="{% static 'site-resources/front-cloud2.png' %}">
+	<img src="{% static 'site-resources/front-tree.png' %}">
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "sunscreen/base1.html" %}
+
+{% load static %}
+
+{% block title %}Expert Quiz{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+	<div class="card-image">
+	    <span class="card-title">Expert Quiz</span>
+	</div>
+	<div class="card-content">
+	    <form action="{% url 'submitquiz' %}" method="post" class="form-register">
+	    	{% if user.role == 'a' %}
+	    	<div class='words' id = '1a1'>
+	    		<p>1. Which ultraviolet light exist all year round, no matter if it is sunny, raining or cloudy?</p>
+		    	<p>
+			      <label>
+			        <input name="1a1" type="radio" />
+			        <span>A. UVA</span>
+			      </label>
+	    		</p>
+	    		<p>
+			      <label>
+			        <input name="1a1" type="radio" />
+			        <span>B. UVB</span>
+			      </label>
+	    		</p>
+	    		<p>
+			      <label>
+			        <input name="1a1" type="radio" />
+			        <span>C. UVC</span>
+			      </label>
+	    		</p>
+    		</div>
+        	<p>{{errors}}</p>
+	        <button class="btn">Submit</button>
+        	{% endif %}
+
+        	{% if user.role == 'b' %}
+        	<p>{{errors}}</p>
+	        <button class="btn">Submit</button>
+        	{% endif %}
+
+        	{% if user.role == 'c' %}
+        	<p>{{errors}}</p>
+	        <button class="btn">Submit</button>
+        	{% endif %}
+	    </form>
+	</div>
+</div>
+{% endblock %}

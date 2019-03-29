@@ -7,18 +7,29 @@
 {% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/join.css' %}">{% endblock %}
 
 {% block content %}
-<div class="left">
-	<div class="intro">
+<div class="row">
+	<div class="left col s6">
 		<p>In this class, you will learn about how sunscreen works. Rather than the regular learning, we will be using the classic Jigsaw method. Here is what you will do after joining the course:</p>
-		<img>
+		<img src="{% static 'site-resources/join-explain.png' %}" alt='Explain'>
 	</div>
-</div>
 
-<div class="right">
-	<button class="btn">Join</button>
-	{% if full %}
-	<p>Sorry. The maximum course capacity is 12. The course is currently full. Please come back later to check if there is any seat available.</p>
-	{% endif %}
+	<div class="right col s6">
+		{% if progress == 'notjoin' %}
+		<a class="btn" href="section/1">Join</a>
+		{% endif %}
+
+		{% if progress == 'inprogress' %}
+		<a class="btn" href="section/{{section_id}}">Resume</a>
+		{% endif %}
+
+		{% if progress == 'done' %}
+		<p class='card'>Thank you for taking the course, your score is</p>
+		{% endif %}
+
+		{% if progress == 'full' %}
+		<p class='card'>Sorry. The maximum course capacity is 12. The course is currently full. Please come back later to check if there is any seat available.</p>
+		{% endif %}
+	</div>
 </div>
 
 {% endblock %}

@@ -1,0 +1,57 @@
+{% extends "sunscreen/base2.html" %}
+
+{% load static %}
+
+{% block title %}Group Discussion{% endblock %}
+
+{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/discuss.css' %}">{% endblock %}
+
+{% block navbar %}
+<nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Cooperative Learning</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="../quiz/1">Take quiz</a></li>
+        <li><a href="sass.html">My Profile</a></li>
+        <li><a href="../logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+<div class="blog-post">
+  <div class="s12 m4 l8 post-body">
+    <li style="list-style-type: none" id="post-list"></li>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+               <h5 class="white-text">Add a post</h5>
+                <div class="add-post">
+                    <textarea class="form-control comment-area" type="text" placeholder="Write something" name="post" id="new_post"></textarea>
+                    <button id="post-btn">Post</button>
+                </div>
+              </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Learners in this channel</h5>
+                <ul>
+                    <li>{{user.username}}</li>
+                  {% for u in userlist %}
+                    <li>{{u.username}}</li>
+                  {% endfor %}
+                </ul>
+            </div>
+          </div>
+      </div>
+</footer>
+
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="{% static 'js/discuss.js' %}"></script>
+{% endblock %}

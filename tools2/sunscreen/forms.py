@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from sunscreen.models import *
 
-class RegisterationForm(forms.ModelForm):
+class RegistrationForm(forms.ModelForm):
 	class Meta:
 		model = User
 		fields = ('username', 'password')
@@ -15,7 +15,7 @@ class RegisterationForm(forms.ModelForm):
 								error_messages={'required': 'Please conform your password.'},
 								widget=forms.PasswordInput())
 	def clean(self):
-		cleaned_data = super(RegisterationForm, self).clean()
+		cleaned_data = super(RegistrationForm, self).clean()
 		password = cleaned_data.get('password')
 		repassword = cleaned_data.get('repassword')
 		if password and repassword and password != repassword:

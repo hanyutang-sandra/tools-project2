@@ -33,3 +33,13 @@ html{
 	margin-top: 50%;
 	margin-left: 10%;
 }
+
+.logout{
+	display: inline-block;
+	width: 5rem !important;
+	height: 2rem !important;
+	margin-top: 0 !important;
+	margin-left: 1rem !important;
+	font-size: 0.8rem;
+	padding: 0;
+}

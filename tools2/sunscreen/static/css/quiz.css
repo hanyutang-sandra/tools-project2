@@ -1,0 +1,19 @@
+.card{
+	margin-top: 5rem;
+}
+
+.quiz_content{
+	margin-top: 1.5rem;
+}
+
+.feedback{
+	display: none;
+}
+
+#next{
+	display: none;
+}
+
+#end{
+	display: none;
+}

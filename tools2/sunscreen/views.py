@@ -12,6 +12,9 @@ from django.urls import reverse
 
 from django.core.mail import send_mail
 
+import json
+from django.http import JsonResponse
+
 from sunscreen.models import *
 from sunscreen.forms import *
 
@@ -40,6 +43,7 @@ def register(request):
 
 	user_profile = UserProfile(user=new_user)
 	user_profile.save()
+	login(request, new_user)
 
 	#token = default_token_generator.make_token(new_user)
 
@@ -134,7 +138,6 @@ def section(request, section_id):
 			context['next'] = 'section/2'
 			user.progress = '1'
 			user.role = find_role()
-			print(user.role)
 			user.save()
 		elif section_id == '2':
 			user.progress = '2'
@@ -161,16 +164,34 @@ def find_role():
 		new_role = list(min(roles.items(), key=lambda x: x[1]))[0]
 	return new_role
 	
+def find_group(request):
+	a_people = UserProfile.objects.filter(role = 'a', progress = '3')
+	b_people = UserProfile.objects.filter(role = 'b', progress = '3')
+	c_people = UserProfile.objects.filter(role = 'c', progress = '3')
+	user = UserProfile.objects.get(user=request.user.id)
+	user_role = user.role
+	new_group = []
+	if user_role == 'a':
+		if len(b_people) > 0:
+			user_b = b_people[0]
+			user.group.add(user_b)
+			new_group.append(user_b.user.username)
+		else: 
+			print('nobody available')
+	print(new_group)
+	return new_group
+
 def discuss(request):
 	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
+	user.progress = '3'
+	user.save()
 	user_role = user.role
 
-	context['posts'] = Post.get_posts_expert_stream(user)
+	context['posts'] = ExpertPost.get_posts_expert_stream(request.user)
 	context['user'] = request.user
 
 	context['userlist'] = UserProfile.objects.filter(role = user_role)
-	print(user_role)
 
 	context['comment_redirect'] = 'stream'
 
@@ -185,31 +206,61 @@ def discuss(request):
 	return render(request, 'sunscreen/discuss.html')
 
 def group(request):
-    context = {}
-    context['posts'] = Post.get_posts_group_stream(request.user)
-    context['user'] = request.user
-    context['comment_redirect'] = 'stream'
-    context['group'] = UserProfile.objects.get(id=request.user.id).group.all()
-
-    return render(request, 'grumblr/group.html', context)
-
-def add_post(request):
+	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
+	user.group.add(request.user)
+	user.progress = '4'
+	user.save()
+
+	context['posts'] = GroupPost.get_posts_group_stream(request.user)
+	context['user'] = request.user
+
+	context['userlist'] = UserProfile.objects.get(user=request.user.id).group.all()
+
+	context['comment_redirect'] = 'stream'
+
+	return render(request, 'sunscreen/teach.html', context)
+
+def add_expertpost(request):
 	if not 'post' in request.POST or not request.POST['post']:
 		raise Http404
 	else:
-		new_post = Post(user=user, text=request.POST['post'])
+		new_post = ExpertPost(user=request.user, text=request.POST['post'])
 		new_post.save()
 
 	return HttpResponse("")  
 
-def comment(request, redirect_name, user_id, post_id):
+def add_grouppost(request):
+	if not 'post' in request.POST or not request.POST['post']:
+		raise Http404
+	else:
+		new_post = GroupPost(user=request.user, text=request.POST['post'])
+		new_post.save()
+
+	return HttpResponse("")  
+
+def expertcomment(request, redirect_name, user_id, post_id):
     context = {}
     errors = []
     if not 'comment' in request.POST or not request.POST['comment']:
         errors.append('You must post something...')
     else:
-        post = Post.objects.get(id=post_id)
+        post = ExpertPost.objects.get(id=post_id)
+        new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
+        new_comment.save()
+        
+    if (redirect_name == 'profile'):
+        return redirect(reverse('profile', kwargs={'user_id':user_id}))
+    else:
+       return redirect(reverse(redirect_name))
+
+def groupcomment(request, redirect_name, user_id, post_id):
+    context = {}
+    errors = []
+    if not 'comment' in request.POST or not request.POST['comment']:
+        errors.append('You must post something...')
+    else:
+        post = GroupPost.objects.get(id=post_id)
         new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
         new_comment.save()
         
@@ -220,60 +271,128 @@ def comment(request, redirect_name, user_id, post_id):
 
 def get_expert_stream_posts(request, time="1970-01-01T00:00+00:00"):
 	user = UserProfile.objects.get(user=request.user.id)
-	max_time = Post.get_max_time_expert_stream(user=request.user)
-	posts = Post.get_posts_expert_stream(user=user, time=time)
+	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
+	posts = ExpertPost.get_posts_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}
 	return render(request, 'posts.json', context, content_type='application/json')
 
 def get_expert_stream_changes(request, time="1970-01-01T00:00+00:00"):
 	user = UserProfile.objects.get(user=request.user.id)
-	max_time = Post.get_max_time_expert_stream(user=request.user)
-	posts = Post.get_changes_expert_stream(user=user, time=time)
+	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
+	posts = ExpertPost.get_changes_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}
 	return render(request, 'posts.json', context, content_type='application/json')
 
-def get_comments(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = Post.objects.get(id=post_id)
-    max_time = Comment.get_max_time(post=post)
-    comments = Comment.get_comments(post=post)
+def get_expertcomments(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = ExpertPost.objects.get(id=post_id)
+    max_time = ExpertComment.get_max_time(post=post)
+    comments = ExpertComment.get_comments(post=post)
     context = {"max_time": max_time, "comments": comments}
     return render(request, 'comments.json', context, content_type='application/json')
 
-def get_comment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = Post.objects.get(id=post_id)
-    max_time = Comment.get_max_time(post=post)
-    comments = Comment.get_changes(post=post, time=time)
+def get_groupcomments(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = GroupPost.objects.get(id=post_id)
+    max_time = GroupComment.get_max_time(post=post)
+    comments = GroupComment.get_comments(post=post)
+    context = {"max_time": max_time, "comments": comments}
+    return render(request, 'comments.json', context, content_type='application/json')
+
+def get_expertcomment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = ExpertPost.objects.get(id=post_id)
+    max_time = ExpertComment.get_max_time(post=post)
+    comments = ExpertComment.get_changes(post=post, time=time)
+    context = {"max_time": max_time, "comments": comments}
+    return render(request, 'comments.json', context, content_type='application/json')
+
+def get_groupcomment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = GroupPost.objects.get(id=post_id)
+    max_time = GroupComment.get_max_time(post=post)
+    comments = GroupComment.get_changes(post=post, time=time)
     context = {"max_time": max_time, "comments": comments}
     return render(request, 'comments.json', context, content_type='application/json')
 
 def get_group_stream_posts(request, time="1970-01-01T00:00+00:00"):
-    max_time = Post.get_max_time_group_stream(user=request.user)
-    posts = Post.get_posts_group_stream(user=request.user, time=time)
+    max_time = GroupPost.get_max_time_group_stream(user=request.user)
+    posts = GroupPost.get_posts_group_stream(user=request.user, time=time)
     context = {"max_time": max_time, "posts": posts}
     return render(request, 'posts.json', context, content_type='application/json')
 
 def get_group_stream_changes(request, time="1970-01-01T00:00+00:00"):
-    max_time = Post.get_max_time_group_stream(user=request.user)
-    posts = Post.get_changes_group_stream(user=request.user, time=time)
+    max_time = GroupPost.get_max_time_group_stream(user=request.user)
+    posts = GroupPost.get_changes_group_stream(user=request.user, time=time)
     context = {"max_time": max_time, "posts": posts}
     return render(request, 'posts.json', context, content_type='application/json')
 
-def add_comment(request, post_id):
+def add_expertcomment(request, post_id):
     if not 'comment' in request.POST or not request.POST['comment']:
         raise Http404
     else:
-        post = Post.objects.get(id=post_id)
-        new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
+        post = ExpertPost.objects.get(id=post_id)
+        new_comment = ExpertComment(user=request.user, post=post, text=request.POST['comment'])
         new_comment.save()
         max_time = new_comment.date_created
-        comments = Comment.get_comments(post)
+        comments = ExpertComment.get_comments(post)
+        context = {"max_time":max_time, "comments": comments}
+    
+    return render(request, 'comments.json', context, content_type='application/json')
+
+def add_groupcomment(request, post_id):
+    if not 'comment' in request.POST or not request.POST['comment']:
+        raise Http404
+    else:
+        post = GroupPost.objects.get(id=post_id)
+        new_comment = GroupComment(user=request.user, post=post, text=request.POST['comment'])
+        new_comment.save()
+        max_time = new_comment.date_created
+        comments = GroupComment.get_comments(post)
         context = {"max_time":max_time, "comments": comments}
     
     return render(request, 'comments.json', context, content_type='application/json')
 
 def quiz(request, quiz_id):
-	return render(request, 'sunscreen/quiz.html')
+	user = UserProfile.objects.get(user=request.user.id)
+	context = {}
+	context['role'] = ''
+	if user.role == 'a':
+		context['role'] = 'a'
+	elif user.role == 'b':
+		context['role'] = 'b'
+	else:
+		context['role'] = 'c'
+	return render(request, 'sunscreen/quiz.html', context)
 
-def submitquiz(request, quiz_id):
-	return HttpResponse("") 
+def checkquiz(request, quiz_id):
+	result = json.loads(request.POST['data'])
+	quiz_id = str(request).split('/')[2].split("'")[0]
+	answerkey_1a = [['1a1', '1a1a'], ['1a2', '1a2a'], ['1a3', '1a3b']]
+	answerkey_1b = [['1b1', '1b1b'], ['1b2', '1b2d']]
+	answerkey_1c = [['1c1', '1c1a'], ['1c2', '1c2b']]
+	if quiz_id == '1a':
+		return JsonResponse(checkanswer(result, answerkey_1a), safe=False)
+	elif quiz_id == '1b':
+		return JsonResponse(checkanswer(result, answerkey_1b), safe=False)
+	else:
+		return JsonResponse(checkanswer(result, answerkey_1c), safe=False)
+	
+def checkanswer(result, answer):
+	feedback = []
+	for i in range(len(result)):
+		if result[i][1] == answer[i][1]:
+			feedback.append('correct')
+		else:
+			feedback.append('incorrect')
+	return feedback
 
+def final(request):
+	return render(request, 'sunscreen/final.html')
+
+def checkfinal(request):
+	result = json.loads(request.POST['data'])
+	answerkey = [['f1', ['f1a', 'f1d']], ['f2', ['f2b', 'f2c']], ['f3', 'f3b'], ['f4', 'f4a'], ['f5', 'f5a'], ['f6', 'f6b']]	
+	return JsonResponse(checkanswer(result, answerkey), safe=False)
+
+def end(request):
+	user = UserProfile.objects.get(user=request.user.id)
+	user.progress = '5'
+	user.save()
+	return render(request, 'sunscreen/end.html')

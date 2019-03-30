@@ -11,7 +11,7 @@
     <div class="nav-wrapper">
       <a href="#" class="brand-logo">Cooperative Learning</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="../quiz/1">Quiz Time</a></li>
+        <li><a href="../final">Final Test</a></li>
         <!--<li><a href="sass.html">My Profile</a></li>-->
         <li><a href="../logout">Logout</a></li>
       </ul>
@@ -41,9 +41,9 @@
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Learners in this channel</h5>
                 <ul>
-                    <li>{{user.username}}</li>
+                    <li>{{user.profile.role}}: {{user.username}}</li>
                   {% for u in userlist %}
-                    <li>{{u.username}}</li>
+                    <li>{{u.role}}:{{u.user.username}}</li>
                   {% endfor %}
                 </ul>
             </div>
@@ -53,5 +53,5 @@
 
 
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="{% static 'js/discuss.js' %}"></script>
+  <script src="{% static 'js/teach.js' %}"></script>
 {% endblock %}

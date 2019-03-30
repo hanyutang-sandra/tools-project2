@@ -2,7 +2,7 @@ function addComment(e) {
     var contentField = $("#" + "post_" + e.data.id).find("#new-comment");
     var postDiv = $("#" + "post_" + e.data.id);
     var list = postDiv.find("#comment-list");
-    $.post("/add-expertcomment/" + e.data.id, {comment: contentField.val()})
+    $.post("/add-groupcomment/" + e.data.id, {comment: contentField.val()})
       .done(function(data) {
         $("#new-comment").val("").focus();
         list.html('');
@@ -20,7 +20,7 @@ function addCommentToPost(post) {
     console.log(post.id)
     var postDiv = $("#" + "post_" + post.id);
     var list = postDiv.find("#comment-list");
-    $.get("/get-expertcomments/" + post.id).done(function(data) {
+    $.get("/get-groupcomments/" + post.id).done(function(data) {
         list.data('max-time', data['max-time']);
         list.html('');
         for (var i = 0; i < data.comments.length; i++) {
@@ -33,7 +33,7 @@ function addCommentToPost(post) {
 }
 
 function populateList() {
-    $.get("/get-expert-stream-posts").done(function(data) {
+    $.get("/get-group-stream-posts").done(function(data) {
         var list = $("#post-list");
         list.data('max-time', data['max-time']);
         list.html('')
@@ -50,7 +50,7 @@ function populateList() {
 
 function addPost() {
     var contentField = $("#new_post");
-    $.post("/add-expertpost", {post: contentField.val()}).done(function(data) {
+    $.post("/add-grouppost", {post: contentField.val()}).done(function(data) {
             getUpdatedPost();
             contentField.val("").focus();
     });
@@ -59,7 +59,7 @@ function addPost() {
 function getUpdatedPost() {
     var list = $("#post-list")
     var max_time = list.data("max-time")
-    $.get("/get-expert-stream-changes/"+max_time)
+    $.get("/get-group-stream-changes/"+max_time)
       .done(function(data){
         list.data('max-time', data['max-time']);
         for (var i = 0; i < data.posts.length; i++) {

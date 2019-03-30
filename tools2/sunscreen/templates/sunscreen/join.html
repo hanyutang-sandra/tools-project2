@@ -23,7 +23,10 @@
 		{% endif %}
 
 		{% if progress == 'done' %}
-		<p class='card'>Thank you for taking the course, your score is</p>
+		<p class='card'>
+			Thank you for taking the course.
+			<a class="btn logout" href="{% url 'logout' %}">Logout</a>
+		</p>
 		{% endif %}
 
 		{% if progress == 'full' %}

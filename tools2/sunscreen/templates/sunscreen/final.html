@@ -1,0 +1,166 @@
+{% extends "sunscreen/base1.html" %}
+
+{% load static %}
+
+{% block title %}Expert Quiz{% endblock %}
+
+{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/quiz.css' %}">{% endblock %}
+
+{% block content %}
+<div class='row'>
+	<div class='col s6 offset-s3'>
+		<div class="card">
+	        <div class="card-content">
+
+	          <span class="card-title" id='final'>Final Exam</span>
+	          <b>Choose as many as you want</b>
+	          <div class='quiz_content multi1' name='f1'>
+	          	<p>1. If you get exposed to too much UVA constantly, how would your skin be?</p>
+	          	<p>
+			      <label>
+			        <input name="f1a" type="checkbox" />
+			        <span>It will wrinkle and age.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f1b" type="checkbox" />
+			        <span>It will redden.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f1c" type="checkbox" />
+			        <span>It will get sunburnt.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f1d" type="checkbox" />
+			        <span>It will get tan.</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA make your skin wrinkle, age and tanned, UVB will make your skin redden and sunburnt.</p>
+	          </div>
+	        <div class='quiz_content multi2'  name='f2'>
+	          	<p>If you get exposed to too much UVB constantly, how would your skin be?</p>
+	          	<p>
+			      <label>
+			        <input name="f2a" type="checkbox" />
+			        <span>It will wrinkle and age.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f2b" type="checkbox" />
+			        <span>It will redden.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f2c" type="checkbox" />
+			        <span>It will get sunburnt.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f2d" type="checkbox" />
+			        <span>It will get tan.</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA make your skin wrinkle, age and tanned, UVB will make your skin redden and sunburnt.</p>
+	          </div>
+
+	         <br>
+	         <b>Choose only one</b>
+	        <div class='quiz_content single'  name='f3'>
+	          	<p>3. When you are doing outdoor activities, such as surfing or swimming, and get sunburnt, which ultraviolet light should you beware of, in order to avoid getting sunburnt?</p>
+	          	<p>
+			      <label>
+			        <input name="f3a" type="radio" />
+			        <span>UVA</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f3b" type="radio" />
+			        <span>UVB</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f3c" type="radio" />
+			        <span>UVC</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: When you are doing outdoor activities, UVB can make your skin redden and get sunburnt.</p>
+	          </div>
+
+	          <div class='quiz_content single'  name='f4'>
+	          	<p>4. If an expert suggests you to apply sunscreen even when the weather is cloudy or rainy, what ultraviolet light is he/she advising you to guard against?</p>
+	          	<p>
+			      <label>
+			        <input name="f4a" type="radio" />
+			        <span>UVA</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f4b" type="radio" />
+			        <span>UVB</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f4c" type="radio" />
+			        <span>UVC</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA will exist all day, no matter what the weather or season is. UVB exists only when it is sunny, and UVC is largely blocked out by the atmosphere.</p>
+	          </div>
+	          <div class='quiz_content single'  name='f5'>
+	          	<p>5. Kelly cares a lot about not burdening her skin when applying sunscreen, which type of sunscreen would you suggest her to use?</p>
+	          	<p>
+			      <label>
+			        <input name="f5a" type="radio" />
+			        <span>Physical sunscreen</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f5b" type="radio" />
+			        <span>Chemical sunscreen</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: Physical sunscreen places less burden to the skin, because it does not involve chemical interaction on your skin.</p>
+	          </div>
+	          <div class='quiz_content single'  name='f6'>
+	          	<p>6. Jane cares a lot about her skin to feel good when applying sunscreen, which type of sunscreen would you suggest her to use?</p>
+	          	<p>
+			      <label>
+			        <input name="f6a" type="radio" />
+			        <span>Physical sunscreen</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="f6b" type="radio" />
+			        <span>Chemical sunscreen</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: In this case, chemical sunscreen may feel better to use on the skin, because they normally feel lighter on the skin.</p>
+	          </div>
+
+	      </div>
+	        <div class="card-action">
+	          <p class='error'></p>
+	          <a class='btn' id='submit'>Submit</a>
+	          <a class='btn', id='end' href="{% url 'end' %}">End Course</a>
+	        </div>
+      </div>
+	</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'js/final.js' %}"></script>
+{% endblock %}

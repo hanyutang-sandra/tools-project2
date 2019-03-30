@@ -4,52 +4,202 @@
 
 {% block title %}Expert Quiz{% endblock %}
 
-{% block css %}
-{% endblock %}
+{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/quiz.css' %}">{% endblock %}
 
 {% block content %}
-<div class="card">
-	<div class="card-image">
-	    <span class="card-title">Expert Quiz</span>
-	</div>
-	<div class="card-content">
-	    <form action="{% url 'submitquiz' %}" method="post" class="form-register">
-	    	{% if user.role == 'a' %}
-	    	<div class='words' id = '1a1'>
-	    		<p>1. Which ultraviolet light exist all year round, no matter if it is sunny, raining or cloudy?</p>
-		    	<p>
-			      <label>
-			        <input name="1a1" type="radio" />
-			        <span>A. UVA</span>
-			      </label>
-	    		</p>
-	    		<p>
-			      <label>
-			        <input name="1a1" type="radio" />
-			        <span>B. UVB</span>
-			      </label>
-	    		</p>
-	    		<p>
-			      <label>
-			        <input name="1a1" type="radio" />
-			        <span>C. UVC</span>
-			      </label>
-	    		</p>
-    		</div>
-        	<p>{{errors}}</p>
-	        <button class="btn">Submit</button>
-        	{% endif %}
+<div class='row'>
+	<div class='col s6 offset-s3'>
+		<div class="card">
+	        <div class="card-content">
 
-        	{% if user.role == 'b' %}
-        	<p>{{errors}}</p>
-	        <button class="btn">Submit</button>
-        	{% endif %}
+	        {% if role == 'a' %}
+	          <span class="card-title" id='1a'>Expert Quiz A</span>
+	          <div class='quiz_content' name='1a1'>
+	          	<p>1. Which ultraviolet light exist all year round, no matter if it is sunny, raining or cloudy?</p>
+	          	<p>
+			      <label>
+			        <input name="1a1a" type="radio" />
+			        <span>UVA</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a1b" type="radio" />
+			        <span>UVB</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a1c" type="radio" />
+			        <span>UVC</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA will exist all day, no matter what the weather or season is. UVB exists only when it is sunny, and UVC is largely blocked out by the atmosphere.</p>
+	          </div>
+	        <div class='quiz_content'  name='1a2'>
+	          	<p>2. Which ultraviolet light cause your skin to age, tan and wrinkle?</p>
+	          	<p>
+			      <label>
+			        <input name="1a2a" type="radio" />
+			        <span>UVA</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a2b" type="radio" />
+			        <span>UVB</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a2c" type="radio" />
+			        <span>UVC</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA make your skin wrinkle, age and tanned, UVB will make your skin redden and sunburnt. UVC is largely blocked out by the atmosphere and hardly reach earth surface, so we don’t need to worry about them.</p>
+	          </div>
+	        <div class='quiz_content'  name='1a3'>
+	          	<p>3. Which ultraviolet light cause your skin to redden and get sunburnt?</p>
+	          	<p>
+			      <label>
+			        <input name="1a3a" type="radio" />
+			        <span>UVA</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a3b" type="radio" />
+			        <span>UVB</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1a3c" type="radio" />
+			        <span>UVC</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: UVA make your skin wrinkle, age and tanned, UVB will make your skin redden and sunburnt. UVC is largely blocked out by the atmosphere and hardly reach earth surface, so we don’t need to worry about them.</p>
+	          </div>
+	      {% endif %}
 
-        	{% if user.role == 'c' %}
-        	<p>{{errors}}</p>
-	        <button class="btn">Submit</button>
-        	{% endif %}
-	    </form>
+	      {% if role == 'b' %}
+	          <span class="card-title" id='1b'>Expert Quiz B</span>
+	          <div class='quiz_content'  name='1b1'>
+	          	<p>1. Which of the following resemble the physical sunscreen the most?</p>
+	          	<p>
+			      <label>
+			        <input name="1b1a" type="radio" />
+			        <span>Sponge</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1b1b" type="radio" />
+			        <span>Wall</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1b1c" type="radio" />
+			        <span>Mirror</span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: The physical sunscreen acts as a wall, because it can block out the sunlight.</p>
+	          </div>
+	        <div class='quiz_content'  name='1b2'>
+	          	<p>2. What is the principle that physical sunscreen work?</p>
+	          	<p>
+			      <label>
+			        <input name="1b2a" type="radio" />
+			        <span>It absorbs the sunlight and turns them into other light.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1b2b" type="radio" />
+			        <span>It absorbs the sunlight and turns them into heat.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1b2c" type="radio" />
+			        <span>It reflects the sunlight away from your skin.</span>
+			      </label>
+			    </p>
+			     <p>
+			      <label>
+			        <input name="1b2d" type="radio" />
+			        <span>It blocks the sunlight from getting to your skin. </span>
+			      </label>
+			    </p>
+			    <p class='feedback'>Explain: The physical sunscreen acts as a wall, because it can block out the sunlight.</p>
+	          </div>
+	      {% endif %}
+
+	      {% if role == 'c' %}
+	          <span class="card-title" id='1c'>Expert Quiz C</span>
+	          <div class='quiz_content' name='1c1'>
+	          	<p>1. Which of the following resemble the chemical sunscreen the most?</p>
+	          	<p>
+			      <label>
+			        <input name="1c1a" type="radio" />
+			        <span>Sponge</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1c1b" type="radio" />
+			        <span>Wall</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1c1c" type="radio" />
+			        <span>Mirror</span>
+			      </label>
+			    </p>
+			     <p class='feedback'>Explain: The chemical sunscreen works like a sponge, because it absorbs the sunlight and turns them into other light.</p>
+	          </div>
+	        <div class='quiz_content' name='1c2'>
+	          	<p>2. What is the principle that physical sunscreen work?</p>
+	          	<p>
+			      <label>
+			        <input name="1c2a" type="radio" />
+			        <span>It absorbs the sunlight and turns them into other light.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1c2b" type="radio" />
+			        <span>It absorbs the sunlight and turns them into heat.</span>
+			      </label>
+			    </p>
+			    <p>
+			      <label>
+			        <input name="1c2c" type="radio" />
+			        <span>It reflects the sunlight away from your skin.</span>
+			      </label>
+			    </p>
+			     <p>
+			      <label>
+			        <input name="1c2d" type="radio" />
+			        <span>It blocks the sunlight from getting to your skin. </span>
+			      </label>
+			    </p>
+			     <p class='feedback'>Explain: The chemical sunscreen works like a sponge, because it absorbs the sunlight and turns them into other light.</p>
+	          </div>
+	         {% endif %}
+
+	      </div>
+	        <div class="card-action">
+	          <p class='error'></p>
+	          <a class='btn' id='submit'>Submit</a>
+	          <a class='btn' id='next' href="{% url 'discuss_group' %}">Group Discussion</a>
+	        </div>
+      </div>
 	</div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}

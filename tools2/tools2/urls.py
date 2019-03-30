@@ -29,6 +29,7 @@ urlpatterns = [
     re_path(r'^register$', sunscreen.views.register, name='register'),
     re_path(r'^login$', sunscreen.views.userlogin, name='login'),
     re_path(r'^join$', sunscreen.views.join, name='join'),
+
     re_path(r'^end$', sunscreen.views.end, name='end'),
 
     re_path(r'^section/(?P<section_id>\d+)$', sunscreen.views.section, name='section'),

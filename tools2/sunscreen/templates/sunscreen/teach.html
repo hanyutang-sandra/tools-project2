@@ -41,9 +41,8 @@
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Learners in this channel</h5>
                 <ul>
-                    <li>{{user.profile.role}}: {{user.username}}</li>
                   {% for u in userlist %}
-                    <li>{{u.role}}:{{u.user.username}}</li>
+                    <li>{{u.profile.role}}: {{u.username}}</li>
                   {% endfor %}
                 </ul>
             </div>

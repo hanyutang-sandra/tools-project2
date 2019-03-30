@@ -91,6 +91,7 @@ def join(request):
 	context = {}
 	context['progress'] = ''
 	context['section_id'] = ''
+	user = UserProfile.objects.get(user=request.user.id)
 	status =  UserProfile.objects.get(user=request.user.id).progress
 	print(status)
 	notjoin = UserProfile.objects.filter(progress = '0')
@@ -103,6 +104,10 @@ def join(request):
 
 	if status == '0':
 		context['progress'] = 'notjoin'
+		user.role = find_role()
+		user.save()
+		#print(UserProfile.objects.filter(role = 'a'))
+		print(user.role)
 	elif status == '5':
 		context['progress'] = 'done'
 	else:
@@ -137,11 +142,16 @@ def section(request, section_id):
 			context['id'] = '9Meh079xYso'
 			context['next'] = 'section/2'
 			user.progress = '1'
-			user.role = find_role()
-			user.save()
+			print(user.role)
+			if len(find_group(request)) < 3:
+				context['error'] = 'Not enough user. Proceed at your own risk.'
+			else:
+				find_group(request)
+				user.save()
 		elif section_id == '2':
 			user.progress = '2'
 			user.save()
+			print(user.role)
 			if user.role == 'a':
 				context['title'] = 'Section 2a : UVA and UVB'
 				context['id'] = '7mc0Axd6Zf0'
@@ -152,34 +162,93 @@ def section(request, section_id):
 				context['title'] = 'Section 2c: Chemical Sunscreen'
 				context['id'] = 'wxI-jK7XgD4'
 			context['next'] = 'section/3'
-		print(user.role)
 		return render(request, 'sunscreen/video.html', context)
 
 def find_role():
-	num_a = len(UserProfile.objects.filter(role = 'a')) - 1
-	num_b = len(UserProfile.objects.filter(role = 'b'))
-	num_c = len(UserProfile.objects.filter(role = 'c'))
+	num_a = len(UserProfile.objects.filter(groupped = False, role = 'a')) - 1
+	num_b = len(UserProfile.objects.filter(groupped = False, role = 'b'))
+	num_c = len(UserProfile.objects.filter(groupped = False, role = 'c'))
 	roles = {'a': num_a, 'b': num_b, 'c': num_c}
 	for x, y in roles.items():
 		new_role = list(min(roles.items(), key=lambda x: x[1]))[0]
 	return new_role
-	
+
 def find_group(request):
-	a_people = UserProfile.objects.filter(role = 'a', progress = '3')
-	b_people = UserProfile.objects.filter(role = 'b', progress = '3')
-	c_people = UserProfile.objects.filter(role = 'c', progress = '3')
-	user = UserProfile.objects.get(user=request.user.id)
+	user_a_available =  UserProfile.objects.filter(groupped = False, role = 'a').all()
+	user_b_available =  UserProfile.objects.filter(groupped = False, role = 'b').all()
+	user_c_available =  UserProfile.objects.filter(groupped = False, role = 'c').all()
+	user = UserProfile.objects.get(user=request.user)
 	user_role = user.role
-	new_group = []
+	user.group.add(request.user)
+	user.save()
+
+	if len(user_b_available) == 0:
+		return user.group.all()
+	if len(user_c_available) == 0: 
+		return user.group.all()
 	if user_role == 'a':
-		if len(b_people) > 0:
-			user_b = b_people[0]
-			user.group.add(user_b)
-			new_group.append(user_b.user.username)
-		else: 
-			print('nobody available')
-	print(new_group)
-	return new_group
+		user_b = User.objects.get(id = user_b_available[0].user.id)
+		user_c = User.objects.get(id = user_c_available[0].user.id)
+
+		user.group.add(user_b)
+		user.group.add(user_c)
+		user.groupped = True
+		user.save()
+
+		user_b_available[0].group.add(request.user)
+		user_b_available[0].group.add(user_c)
+		user_b_available[0].groupped = True
+		user_b_available[0].save()
+
+
+		user_c_available[0].group.add(request.user)
+		user_c_available[0].group.add(user_b)
+		user_c_available[0].groupped = True
+		user_c_available[0].save()
+
+	elif user_role == 'b':
+		user_a = User.objects.get(id = user_a_available[0].user.id)
+		user_c = User.objects.get(id = user_c_available[0].user.id)
+
+		user.group.add(user_a)
+		user.group.add(user_c)
+		user.groupped = True
+		user.save()
+
+		user_a_available[0].group.add(request.user)
+		user_a_available[0].group.add(user_c)
+		user_a_available[0].groupped = True
+		user_a_available[0].save()
+
+
+		user_c_available[0].group.add(request.user)
+		user_c_available[0].group.add(user_a)
+		user_c_available[0].groupped = True
+		user_c_available[0].save()
+	elif user_role == 'c':
+		user_a = User.objects.get(id = user_a_available[0].user.id)
+		user_b = User.objects.get(id = user_b_available[0].user.id)
+
+		user.group.add(user_a)
+		user.group.add(user_b)
+		user.groupped = True
+		user.save()
+
+		user_a_available[0].group.add(request.user)
+		user_a_available[0].group.add(user_b)
+		user_a_available[0].groupped = True
+		user_a_available[0].save()
+
+
+		user_b_available[0].group.add(request.user)
+		user_b_available[0].group.add(user_a)
+		user_b_available[0].groupped = True
+		user_b_available[0].save()
+	
+	print(user.groupped)
+	print(user.group.all())
+
+	return user.group.all()
 
 def discuss(request):
 	context = {}
@@ -203,12 +272,12 @@ def discuss(request):
 	else:
 		context['next'] = '3'
 
-	return render(request, 'sunscreen/discuss.html')
+	return render(request, 'sunscreen/discuss.html', context)
 
 def group(request):
 	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
-	user.group.add(request.user)
+
 	user.progress = '4'
 	user.save()
 
@@ -216,6 +285,8 @@ def group(request):
 	context['user'] = request.user
 
 	context['userlist'] = UserProfile.objects.get(user=request.user.id).group.all()
+	print(UserProfile.objects.get(user=request.user.id).group.all())
+	userlist=UserProfile.objects.get(user=request.user.id).group.all()
 
 	context['comment_redirect'] = 'stream'
 

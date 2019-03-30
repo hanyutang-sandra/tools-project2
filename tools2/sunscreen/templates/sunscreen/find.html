@@ -1,0 +1,23 @@
+{% extends "sunscreen/base1.html" %}
+
+{% load static %}
+
+{% block title %}Find Your Group Member{% endblock %}
+
+{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/find.css' %}">{% endblock %}
+
+{% block content %}
+<b>Your role</b>
+<p>{{user.role}}</p>
+<br>
+<b>a</b>
+{% for u1 in user_1 %}
+<p><a class = 'btn' href="">{{ u1.user.username }}</a></p>
+{% endfor %}
+<br>
+
+<b>c</b>
+{% for u2 in user_2 %}
+<p><a class= 'btn' href="">{{ u2.user.username }}</a></p>
+{% endfor %}
+{% endblock %}

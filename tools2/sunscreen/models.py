@@ -14,6 +14,7 @@ class UserProfile(models.Model):
 	role = models.TextField(max_length=100, default='a', blank=False)
 	picture = models.ImageField(upload_to='profile-pictures', default='', blank=True)
 	group = models.ManyToManyField(User, related_name='group', symmetrical=False)
+	groupped = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.user
@@ -34,8 +35,11 @@ class ExpertPost(models.Model):
 
 	@staticmethod
 	def get_posts_expert_stream(user, time="1970-01-01T00:00+00:00"):
-		user_role = UserProfile.objects.get(role = user.profile.role)
-		return ExpertPost.objects.all().filter(deleted=False, user = User.objects.get(username = user_role.user.username), 
+		user_role = UserProfile.objects.filter(role = user.profile.role)
+		user_role_group = []
+		for u in user_role:
+			user_role_group.append(u.user)
+		return ExpertPost.objects.all().filter(deleted=False, user__in=user_role_group, 
 			   date_created__gt=time).distinct().order_by('-date_created').reverse()
 
 	@staticmethod
@@ -53,8 +57,11 @@ class ExpertPost(models.Model):
 
 	@staticmethod
 	def get_changes_expert_stream(user, time="1970-01-01T00:00+00:00"):
-		user_role = UserProfile.objects.get(role = user.profile.role)
-		return ExpertPost.objects.filter(user = User.objects.get(username = user_role.user.username)).filter(date_created__gt=time).distinct().order_by('-date_created').reverse()
+		user_role = UserProfile.objects.filter(role = user.profile.role)
+		user_role_group = []
+		for u in user_role:
+			user_role_group.append(u.user)
+		return ExpertPost.objects.filter(user__in=user_role_group).filter(date_created__gt=time).distinct().order_by('-date_created').reverse()
 
 	@property
 	def html(self):
@@ -138,8 +145,7 @@ class GroupPost(models.Model):
 
 	@staticmethod
 	def get_max_time_group_stream(user):
-		group = user.profile.group.all()
-		print(group)
+		group = user.profile.group.all()	
 		return GroupPost.objects.filter(user__in=group).aggregate(Max('date_created'))['date_created__max'] or "1970-01-01T00:00+00:00"
 
 	@staticmethod

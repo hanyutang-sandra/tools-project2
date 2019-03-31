@@ -1,17 +1,28 @@
+html{
+  background-image: url("../site-resources/register-bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 nav{
   position: fixed;
   top: 0;
   z-index: 100;
+  background-color: #80cbd3 !important;
 }
 
 .nav-wrapper{
   padding: 0 3rem;
-  background-color: #ffdc68 !important;
 
 }
 
-.blog-post{
+.info{
   margin-top: 6rem;
+}
+
+.blog-post{
+  margin-top: 3rem;
   margin-bottom: 20rem;
 }
 
@@ -54,11 +65,11 @@ nav{
   border-radius: 50%;
 }
 
-.card-profile>a{
+.card-profile>p{
   display: inline-block;
   vertical-align: top;
-  margin-left: 1rem;
-  margin-top: 1.5rem;
+  margin-left: 2rem !important;
+  margin-top: 1.5rem !important;
 }
 
 .comment-btn{
@@ -69,6 +80,7 @@ nav{
   margin-top: -3rem;
   margin-right: 0.5rem;
   cursor: pointer;
+  color:;
 }
 
 .comment-area{
@@ -85,7 +97,12 @@ nav{
   position:fixed;
   bottom: 0;
   z-index: 100;
-  background-color: #ffdc68;
+  background-color: #80cbd3;
+}
+
+b{
+  text-transform: uppercase;
+  font-size: 1.5rem;
 }
 
 .add-post{
@@ -133,18 +150,14 @@ nav{
 #comment-btn{
   margin-top: 1rem;
   display: inline-block;
-  width: 6rem;
-  height: 2.5rem;
-  background-color: #212A55;
-  color: white;
-  border: none;
-  border-radius: 0.3rem;
-  cursor: pointer;
 }
 
-#comment-btn:hover{
-  background-color: #93ebf1;
-  transition: 0.7s ease;
+.material-icons{
+  color: #80cbd3;
+}
+
+.material-icons:hover{
+  color: #eda536;
 }
 
 .error{
@@ -152,6 +165,26 @@ nav{
   float: right;
 }
 
+.btn{
+  display: inline-block !important;  
+  background-color: #80cbd3 !important;
+  border-radius: 0.5rem !important;
+}
+
+.btn:hover{
+  background-color: #eda536 !important;
+}
+
+.alert{
+  display: none;
+  visibility: hidden;
+  background: white;
+  position: fixed;
+  z-index: 100;
+  width: 50rem !important;
+  left: 50%;
+  margin-left: -25rem;
+}
 
 
 

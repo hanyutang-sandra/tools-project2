@@ -9,6 +9,11 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('playerb', {
       height: '640',
       width: '960',
+      playerVars: {
+          rel: 0,
+          showinfo: 0,
+          fs: 0
+      },
       videoId: 'bLdm82MA0bg',
       events: {
             'onReady': onPlayerReady,
@@ -45,7 +50,7 @@ function displayQuiz1(){
 
 function handleQuiz1(){
   $('#b1').children().find('input').click(function(){
-    $('#b1').children('.quiz_btn').css('display', 'block').click(function(){
+    $('#b1').children('.quiz_btn').css('display', 'inline-block').click(function(){
       $('.cover.b').css('display', 'none').css('visibility', 'hidden')
     $('#b1').css('display', 'none').css('visibility', 'hidden')
     $('#playerb').css('display', 'block')
@@ -85,7 +90,7 @@ function displayQuiz2(){
 
 function handleQuiz2(){
   $('#b2').children().find('input').click(function(){
-    $('#b2').children('.quiz_btn').css('display', 'block').click(function(){
+    $('#b2').children('.quiz_btn').css('display', 'inline-block').click(function(){
       $('.cover.b').css('display', 'none').css('visibility', 'hidden')
     $('#b2').css('display', 'none').css('visibility', 'hidden')
     $('#playerb').css('display', 'block')
@@ -123,7 +128,7 @@ function displayQuiz3(){
 function handleQuiz3(){
   $('#b3').children().find('input').click(function(){
     console.log($('#b3').children())
-    $('#b3').children('.quiz_btn').css('display', 'block').click(function(){
+    $('#b3').children('.quiz_btn').css('display', 'inline-block').click(function(){
     $('.cover.b').css('display', 'none').css('visibility', 'hidden')
     $('#b3').css('display', 'none').css('visibility', 'hidden')
     $('#playerb').css('display', 'block')

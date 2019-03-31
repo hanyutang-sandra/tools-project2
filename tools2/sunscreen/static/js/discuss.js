@@ -2,9 +2,9 @@ function addComment(e) {
     var contentField = $("#" + "post_" + e.data.id).find("#new-comment");
     var postDiv = $("#" + "post_" + e.data.id);
     var list = postDiv.find("#comment-list");
-    $.post("/add-expertcomment/" + e.data.id, {comment: contentField.val()})
+    $.post("/add-comment/" + e.data.id, {comment: contentField.val()})
       .done(function(data) {
-        $("#new-comment").val("").focus();
+        contentField.val("").focus();
         list.html('');
         for (var i = 0; i < data.comments.length; i++) {
             comment = data.comments[i];
@@ -19,7 +19,7 @@ function addComment(e) {
 function addCommentToPost(post) {
     var postDiv = $("#" + "post_" + post.id);
     var list = postDiv.find("#comment-list");
-    $.get("/get-expertcomments/" + post.id).done(function(data) {
+    $.get("/get-comments/" + post.id).done(function(data) {
         list.data('max-time', data['max-time']);
         list.html('');
         for (var i = 0; i < data.comments.length; i++) {
@@ -27,6 +27,7 @@ function addCommentToPost(post) {
             var new_comment = $(comment.html);
             new_comment.data("comment-id", comment.id);
             list.prepend(new_comment);
+            addCommentToPost(new_post)
         }
     });
 }
@@ -42,7 +43,7 @@ function populateList() {
             new_post.data("post-id", post.id);
             new_post.find("#comment-btn").click(post, addComment);
             list.prepend(new_post);
-            addCommentToPost(post);
+            addCommentToPost(new_post);
         }
     });
 }
@@ -63,11 +64,15 @@ function getUpdatedPost() {
         list.data('max-time', data['max-time']);
         for (var i = 0; i < data.posts.length; i++) {
             var post = data.posts[i];
-            var new_post = $(post.html);
-            new_post.data("post-id", post.id);
-            new_post.find("#comment-btn").click(post, addComment);
-            list.prepend(new_post);
-            addCommentToPost(post);
+            if (post.deleted) {
+                $("#post_" + post.id).remove();
+            } else {
+                var new_post = $(post.html);
+                new_post.data("post-id", post.id);
+                new_post.find("#comment-btn").click(post, addComment);
+                list.prepend(new_post);
+                addCommentToPost(post);
+            }
         }
     });
 }

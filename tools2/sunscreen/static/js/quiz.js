@@ -27,6 +27,10 @@ function submitQuiz(){
 		if (!checkComplete()){
 			return false
 		}
+		$('input').each(function(){
+			console.log('1')
+			$(this).attr('disabled', 'disabled')
+		})
 		let answerMap = new Map()
 		$('.quiz_content').each(function(){
 			answerMap.set($(this)[0].attributes[1].value, $(this).children().find('input:checked')[0].attributes[0].value)
@@ -57,6 +61,9 @@ function provideFeedback(data){
 		$('#next').css('display', 'inline-block')
 	}else{
 		$('#submit').text('Retry').click(function(){
+			$('input').each(function(){
+				$(this).removeAttr('disabled', 'disabled')
+			})
 			location.reload()
 		})
 

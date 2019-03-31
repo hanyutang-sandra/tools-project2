@@ -9,7 +9,12 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('playera', {
       height: '640',
       width: '960',
-      videoId: 'bLdm82MA0bg',
+      playerVars: {
+          rel: 0,
+          showinfo: 0,
+          fs: 0
+      },
+      videoId: '7mc0Axd6Zf0',
       events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
@@ -22,37 +27,35 @@ function onPlayerReady(event) {
 }
 
 
-
-//let interval = setInterval(function(){
-//    console.log(getTime())
-//}, 700)
 singleSelection()
 
 const quiz1 = {
   id: '#a1',
   answerkey: 'a1a',
-  begin: 29.5,
-  incorrect: 57.5,
-  next: 103
+  begin: 75,
+  incorrect: 86,
+  next: 160
 }
 
 function displayQuiz1(){
+  console.log('1')
   pauseVideo()
-  $('#playerb').css('display', 'none')
-  $('.cover.b').css('display', 'block').css('visibility', 'visible')
-  $('#b1').css('display', 'inline-block').css('visibility', 'visible')
+  $('#playera').css('display', 'none')
+  $('.cover.a').css('display', 'block').css('visibility', 'visible')
+  $('#a1').css('display', 'inline-block').css('visibility', 'visible')
 }
 
 function handleQuiz1(){
-  $('#b1').children().find('input').click(function(){
-    $('#b1').children('.quiz_btn').css('display', 'block').click(function(){
-      $('.cover.b').css('display', 'none').css('visibility', 'hidden')
-    $('#b1').css('display', 'none').css('visibility', 'hidden')
-    $('#playerb').css('display', 'block')
-    if ($('#b1').children().find('input:checked')[0].attributes[0].value === 'a1a') {        
+  $('#a1').children().find('input').click(function(){
+    $('#a1').children('.quiz_btn').css('display', 'inline-block').click(function(){
+      $('.cover.a').css('display', 'none').css('visibility', 'hidden')
+    $('#a1').css('display', 'none').css('visibility', 'hidden')
+    $('#playera').css('display', 'block')
+    if ($('#a1').children().find('input:checked')[0].attributes[0].value === 'a1a') {        
+      seekVideo(76)
       playVideo()
     }else{
-      seekVideo(58)
+      seekVideo(86)
       playVideo()
     }
     })
@@ -60,7 +63,7 @@ function handleQuiz1(){
 }
 
 function handleChange1(){
-  seekVideo(103)
+  seekVideo(160)
   playVideo()
 }
 
@@ -71,28 +74,28 @@ handleQuiz1()
 const quiz2 = {
   id: '#a2',
   answerkey: 'a2b',
-  begin: 167,
-  incorrect: 186,
-  next: 226,
+  begin: 170,
+  incorrect: 181,
+  next: 300,
 }
 
 function displayQuiz2(){
   pauseVideo()
-  $('#playerb').css('display', 'none')
-  $('.cover.b').css('display', 'block').css('visibility', 'visible')
-  $('#b2').css('display', 'inline-block').css('visibility', 'visible')
+  $('#playera').css('display', 'none')
+  $('.cover.a').css('display', 'block').css('visibility', 'visible')
+  $('#a2').css('display', 'inline-block').css('visibility', 'visible')
 }
 
 function handleQuiz2(){
-  $('#b2').children().find('input').click(function(){
-    $('#b2').children('.quiz_btn').css('display', 'block').click(function(){
-      $('.cover.b').css('display', 'none').css('visibility', 'hidden')
-    $('#b2').css('display', 'none').css('visibility', 'hidden')
-    $('#playerb').css('display', 'block')
-    if ($('#b2').children().find('input:checked')[0].attributes[0].value === 'a2b') {        
+  $('#a2').children().find('input').click(function(){
+    $('#a2').children('.quiz_btn').css('display', 'inline-block').click(function(){
+      $('.cover.a').css('display', 'none').css('visibility', 'hidden')
+    $('#a2').css('display', 'none').css('visibility', 'hidden')
+    $('#playera').css('display', 'block')
+    if ($('#a2').children().find('input:checked')[0].attributes[0].value === 'a2b') {        
       playVideo()
     }else{
-      seekVideo(186)
+      seekVideo(181)
       playVideo()
     }
     })
@@ -100,8 +103,7 @@ function handleQuiz2(){
 }
 
 function handleChange2(){
-  seekVideo(226)
-  playVideo()
+  stopVideo()
 }
 
 handleQuiz2()

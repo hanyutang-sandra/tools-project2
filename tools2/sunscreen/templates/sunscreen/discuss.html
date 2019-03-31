@@ -9,7 +9,7 @@
 {% block navbar %}
 <nav>
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Cooperative Learning</a>
+      <a href="#" class="brand-logo">How Sunscreen Works</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="../quiz/1">Quiz Time</a></li>
         <!--<li><a href="sass.html">My Profile</a></li>-->
@@ -20,6 +20,12 @@
 {% endblock %}
 
 {% block content %}
+<div class='info card'>
+  <p>Do you have any questions or confusions about the part you just watched? </p>
+  <p>Now discuss with EXPERTS who also watched it to make sure you understand it correctly before you teach your peers!</p>
+  <p>When you are confident, click the ENTER QUIZ on the right.</p>
+  <p>You need to be 100% correct on the quiz, before you can teach your peers!</p>
+</div>
 <div class="blog-post">
   <div class="s12 m4 l8 post-body">
     <li style="list-style-type: none" id="post-list"></li>
@@ -34,13 +40,13 @@
             <div class="col l6 s12">
                <h5 class="white-text">Add a post</h5>
                 <div class="add-post">
-                    <textarea class="form-control comment-area" type="text" placeholder="Write something" name="post" id="new_post"></textarea>
+                    <textarea class="form-control comment-area" type="text" placeholder="Post to join the dicussion" name="post" id="new_post"></textarea>
                     <a class='btn' id="post-btn">Post</a>
                     <p class="error">{{error}}</p>
                 </div>
               </div>
             <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Learners in this channel</h5>
+                <h5 class="white-text">Learners in this channel <b>{{user.profile.role}}</b></h5>
                 <ul>
                   {% for u in userlist %}
                     <li>{{u.user.username}}</li>

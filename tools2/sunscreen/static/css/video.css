@@ -1,6 +1,9 @@
 nav{
 	background-color: #80cbd3 !important;
-	padding: 0 3rem !important;
+}
+
+.nav-wrapper{
+  padding: 0 3rem !important;
 }
 
 .group{
@@ -37,9 +40,6 @@ nav{
 	display: none;
 }
 
-#playerb{
-	display: block;
-}
 
 .cover.a{
 	display: none;
@@ -65,4 +65,25 @@ nav{
 
 #playera{
 	display: block;
+	margin-bottom: 10rem;
+}
+
+#playerb{
+	display: block;
+	margin-bottom: 10rem;
+}
+
+#playercommon{
+	display: block;
+	margin-bottom: 10rem;
+}
+
+.btn{
+  display: inline-block;	
+  background-color: #80cbd3;
+  border-radius: 0.5rem;
+}
+
+.btn:hover{
+  background-color: #eda536;
 }

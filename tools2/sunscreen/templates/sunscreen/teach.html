@@ -9,9 +9,9 @@
 {% block navbar %}
 <nav>
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Cooperative Learning</a>
+      <a href="#" class="brand-logo">How Sunscreen Works</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="../final">Final Test</a></li>
+        <li><a class='final_btn'>Final Test</a></li>
         <!--<li><a href="sass.html">My Profile</a></li>-->
         <li><a href="../logout">Logout</a></li>
       </ul>
@@ -20,6 +20,37 @@
 {% endblock %}
 
 {% block content %}
+
+    <div class='alert card'>
+      <div class="card-content">
+        <span class="card-title">Did you teach your partner?</span>
+        <p class='q1'>Did you finish teaching your partner about your part?</p>
+        <p class='q2'>Did you make sure your partner has no more questions about content you taught?</p>
+        <p class='al1'>Please be responsible to your partner and teach them about your part.</p>
+        <p class='al2'>Please be responsible to your partner and make sure they have understood everything</p>
+      </div>
+      <div class="card-action ac_q1">
+        <a class='btn'>Yes</a>
+        <a class='btn'>No</a>
+      </div>
+      <div class="card-action ac_q2">
+        <a class='btn'>Yes</a>
+        <a class='btn'>No</a>
+      </div>
+       <div class="card-action pass">
+        <a class='btn' href="../final">Now you can proceed to the quiz.Good luck.</a>
+      </div>
+      <div class="card-action ac_al">
+        <a class='btn'>Go back to the dicsussion board</a>
+      </div>
+    </div>
+<div class='info card'>
+  <p>Now teach your peer about what you learnt in the second video. </p>
+  <p>Remember, they are new to this material, so be patient with them, ask them if they understand! </p>
+  <p>They need to teach you the part they learnt too, ask if you don’t understand anything!</p>
+  <p>After you all teach each other, proceed to the final quiz, which will test you on both the part you learnt by watching the videos, and the part your peer just taught you.</p>
+  <p>Good luck!<p>
+</div>
 <div class="blog-post">
   <div class="s12 m4 l8 post-body">
     <li style="list-style-type: none" id="post-list"></li>
@@ -34,7 +65,7 @@
             <div class="col l6 s12">
                <h5 class="white-text">Add a post</h5>
                 <div class="add-post">
-                    <textarea class="form-control comment-area" type="text" placeholder="Write something" name="post" id="new_post"></textarea>
+                    <textarea class="form-control comment-area" type="text" placeholder="Teach your peers" name="post" id="new_post"></textarea>
                     <button id="post-btn">Post</button>
                 </div>
               </div>
@@ -42,7 +73,7 @@
                 <h5 class="white-text">Learners in this channel</h5>
                 <ul>
                   {% for u in userlist %}
-                    <li>{{u.profile.role}}: {{u.username}}</li>
+                    <li><b>{{u.profile.role}}:</b> {{u.username}}</li>
                   {% endfor %}
                 </ul>
             </div>

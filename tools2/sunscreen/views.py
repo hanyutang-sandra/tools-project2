@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 from mimetypes import guess_type
@@ -7,6 +8,7 @@ from mimetypes import guess_type
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 
 from django.urls import reverse
 
@@ -87,13 +89,13 @@ def userlogin(request):
 
 	return render(request,'sunscreen/login.html',context)
 
+@login_required
 def join(request):
 	context = {}
 	context['progress'] = ''
 	context['section_id'] = ''
 	user = UserProfile.objects.get(user=request.user.id)
 	status =  UserProfile.objects.get(user=request.user.id).progress
-	print(status)
 	notjoin = UserProfile.objects.filter(progress = '0')
 	done = UserProfile.objects.filter(progress = '4')
 	inprogress = len(UserProfile.objects.all()) - len(notjoin) - len(done)
@@ -103,9 +105,6 @@ def join(request):
 		user.role = find_role()
 		user.save()
 		context['role'] = user.role
-		print(user.role)
-		print(user.group.all())
-		print(UserProfile.objects.all())
 	elif status == '5':
 		context['progress'] = 'done'
 	else:
@@ -124,6 +123,7 @@ def join(request):
 			context['sec_word'] = "You are currently discussing with your group members"
 	return render(request, 'sunscreen/join.html', context)
 
+@login_required
 def section(request, section_id):
 	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
@@ -147,7 +147,7 @@ def section(request, section_id):
 			context['sec'] = '1'
 			user.progress = '1'
 			user.save()
-			if len(find_group(request)) < 3:
+			if len(find_group(request)) < 2:
 				context['error'] = 'Sorry, there are not enough people in your group yet. You can proceed and learn, but you may miss part of the content, and may not be able to do final quiz perfectly! You can refresh to see if other people have joined the course.'
 				context['role'] = user.role
 			else:
@@ -178,6 +178,7 @@ def find_role():
 	else:
 		return 'a'
 
+@login_required
 def find_group(request):
 	user_a_available =  UserProfile.objects.filter(groupped = False, role = 'a').all()
 	user_b_available =  UserProfile.objects.filter(groupped = False, role = 'b').all()
@@ -214,12 +215,10 @@ def find_group(request):
 		user_a_available[0].group.add(request.user)
 		user_a_available[0].groupped = True
 		user_a_available[0].save()
-	
-	print(user.groupped)
-	print(user.group.all())
 
 	return user.group.all()
 
+@login_required
 def discuss(request):
 	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
@@ -227,7 +226,7 @@ def discuss(request):
 	user.save()
 	user_role = user.role
 
-	context['posts'] = ExpertPost.get_posts_expert_stream(request.user)
+	context['posts'] = Post.get_posts_expert_stream(request.user)
 	context['user'] = request.user
 
 	context['userlist'] = UserProfile.objects.filter(role = user_role)
@@ -244,6 +243,7 @@ def discuss(request):
 
 	return render(request, 'sunscreen/discuss.html', context)
 
+@login_required
 def group(request):
 	context = {}
 	user = UserProfile.objects.get(user=request.user.id)
@@ -251,7 +251,7 @@ def group(request):
 	user.progress = '4'
 	user.save()
 
-	context['posts'] = GroupPost.get_posts_group_stream(request.user)
+	context['posts'] = Post.get_posts_group_stream(request.user)
 	context['user'] = request.user
 
 	context['userlist'] = UserProfile.objects.get(user=request.user.id).group.all()
@@ -262,31 +262,34 @@ def group(request):
 
 	return render(request, 'sunscreen/teach.html', context)
 
+@login_required
 def add_expertpost(request):
 	if not 'post' in request.POST or not request.POST['post']:
 		raise Http404
 	else:
-		new_post = ExpertPost(user=request.user, text=request.POST['post'])
+		new_post = Post(user=request.user, text=request.POST['post'], expert=False)
 		new_post.save()
 
 	return HttpResponse("")  
 
+@login_required
 def add_grouppost(request):
 	if not 'post' in request.POST or not request.POST['post']:
 		raise Http404
 	else:
-		new_post = GroupPost(user=request.user, text=request.POST['post'])
+		new_post = Post(user=request.user, text=request.POST['post'], expert=True)
 		new_post.save()
 
 	return HttpResponse("")  
 
-def expertcomment(request, redirect_name, user_id, post_id):
+@login_required
+def comment(request, redirect_name, user_id, post_id):
     context = {}
     errors = []
     if not 'comment' in request.POST or not request.POST['comment']:
         errors.append('You must post something...')
     else:
-        post = ExpertPost.objects.get(id=post_id)
+        post = Post.objects.get(id=post_id)
         new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
         new_comment.save()
         
@@ -295,101 +298,65 @@ def expertcomment(request, redirect_name, user_id, post_id):
     else:
        return redirect(reverse(redirect_name))
 
-def groupcomment(request, redirect_name, user_id, post_id):
-    context = {}
-    errors = []
-    if not 'comment' in request.POST or not request.POST['comment']:
-        errors.append('You must post something...')
-    else:
-        post = GroupPost.objects.get(id=post_id)
-        new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
-        new_comment.save()
-        
-    if (redirect_name == 'profile'):
-        return redirect(reverse('profile', kwargs={'user_id':user_id}))
-    else:
-       return redirect(reverse(redirect_name))
-
+@login_required
 def get_expert_stream_posts(request, time="1970-01-01T00:00+00:00"):
-	#user = UserProfile.objects.get(user=request.user.id)
-	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
-	posts = ExpertPost.get_posts_expert_stream(user=request.user, time=time)
+	max_time = Post.get_max_time_expert_stream(user=request.user)
+	posts = Post.get_posts_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}
 	return render(request, 'posts.json', context, content_type='application/json')
 
+@login_required
 def get_expert_stream_changes(request, time="1970-01-01T00:00+00:00"):
-	#user = UserProfile.objects.get(user=request.user.id)
-	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
-	posts = ExpertPost.get_changes_expert_stream(user=request.user, time=time)
+	max_time = Post.get_max_time_expert_stream(user=request.user)
+	posts = Post.get_changes_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}
 	return render(request, 'posts.json', context, content_type='application/json')
 
-def get_expertcomments(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = ExpertPost.objects.get(id=post_id)
-    max_time = ExpertComment.get_max_time(post=post)
-    comments = ExpertComment.get_comments(post=post)
+@login_required
+def get_comments(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = Post.objects.get(id=post_id)
+    max_time = Comment.get_max_time(post=post)
+    comments = Comment.get_comments(post=post)
     context = {"max_time": max_time, "comments": comments}
     return render(request, 'comments.json', context, content_type='application/json')
 
-def get_groupcomments(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = GroupPost.objects.get(id=post_id)
-    max_time = GroupComment.get_max_time(post=post)
-    comments = GroupComment.get_comments(post=post)
+@login_required
+def get_comment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
+    post = Post.objects.get(id=post_id)
+    max_time = Comment.get_max_time(post=post)
+    comments = Comment.get_changes(post=post, time=time)
     context = {"max_time": max_time, "comments": comments}
     return render(request, 'comments.json', context, content_type='application/json')
 
-def get_expertcomment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = ExpertPost.objects.get(id=post_id)
-    max_time = ExpertComment.get_max_time(post=post)
-    comments = ExpertComment.get_changes(post=post, time=time)
-    context = {"max_time": max_time, "comments": comments}
-    return render(request, 'comments.json', context, content_type='application/json')
-
-def get_groupcomment_changes(request, post_id, time="1970-01-01T00:00+00:00"):
-    post = GroupPost.objects.get(id=post_id)
-    max_time = GroupComment.get_max_time(post=post)
-    comments = GroupComment.get_changes(post=post, time=time)
-    context = {"max_time": max_time, "comments": comments}
-    return render(request, 'comments.json', context, content_type='application/json')
-
+@login_required
 def get_group_stream_posts(request, time="1970-01-01T00:00+00:00"):
-    max_time = GroupPost.get_max_time_group_stream(user=request.user)
-    posts = GroupPost.get_posts_group_stream(user=request.user, time=time)
-    context = {"max_time": max_time, "posts": posts}
-    return render(request, 'posts.json', context, content_type='application/json')
+	max_time = Post.get_max_time_group_stream(user=request.user)
+	posts = Post.get_posts_group_stream(user=request.user, time=time)
+	context = {"max_time": max_time, "posts": posts}
+	return render(request, 'posts.json', context, content_type='application/json')
 
+@login_required
 def get_group_stream_changes(request, time="1970-01-01T00:00+00:00"):
-    max_time = GroupPost.get_max_time_group_stream(user=request.user)
-    posts = GroupPost.get_changes_group_stream(user=request.user, time=time)
-    context = {"max_time": max_time, "posts": posts}
-    return render(request, 'posts.json', context, content_type='application/json')
+	max_time = Post.get_max_time_group_stream(user=request.user)
+	posts = Post.get_changes_group_stream(user=request.user, time=time)
+	context = {"max_time": max_time, "posts": posts}
+	return render(request, 'posts.json', context, content_type='application/json')
 
-def add_expertcomment(request, post_id):
+@login_required
+def add_comment(request, post_id):
     if not 'comment' in request.POST or not request.POST['comment']:
         raise Http404
     else:
-        post = ExpertPost.objects.get(id=post_id)
-        new_comment = ExpertComment(user=request.user, post=post, text=request.POST['comment'])
+        post = Post.objects.get(id=post_id)
+        new_comment = Comment(user=request.user, post=post, text=request.POST['comment'])
         new_comment.save()
         max_time = new_comment.date_created
-        comments = ExpertComment.get_comments(post)
+        comments = Comment.get_comments(post)
         context = {"max_time":max_time, "comments": comments}
     
     return render(request, 'comments.json', context, content_type='application/json')
 
-def add_groupcomment(request, post_id):
-    if not 'comment' in request.POST or not request.POST['comment']:
-        raise Http404
-    else:
-        post = GroupPost.objects.get(id=post_id)
-        new_comment = GroupComment(user=request.user, post=post, text=request.POST['comment'])
-        new_comment.save()
-        max_time = new_comment.date_created
-        comments = GroupComment.get_comments(post)
-        context = {"max_time":max_time, "comments": comments}
-    
-    return render(request, 'comments.json', context, content_type='application/json')
-
+@login_required
 def quiz(request, quiz_id):
 	user = UserProfile.objects.get(user=request.user.id)
 	context = {}
@@ -398,23 +365,20 @@ def quiz(request, quiz_id):
 		context['role'] = 'a'
 	elif user.role == 'b':
 		context['role'] = 'b'
-	else:
-		context['role'] = 'c'
 	return render(request, 'sunscreen/quiz.html', context)
 
+@login_required
 def checkquiz(request, quiz_id):
 	result = json.loads(request.POST['data'])
 	quiz_id = str(request).split('/')[2].split("'")[0]
 	answerkey_1a = [['1a1', '1a1a'], ['1a2', '1a2a'], ['1a3', '1a3b']]
-	answerkey_1b = [['1b1', '1b1b'], ['1b2', '1b2d']]
-	answerkey_1c = [['1c1', '1c1a'], ['1c2', '1c2b']]
+	answerkey_1b = [['1b1', '1b1b'], ['1b2', '1b2d'], ['1b3', '1b3a'], ['1b4', '1b4b']]
 	if quiz_id == '1a':
 		return JsonResponse(checkanswer(result, answerkey_1a), safe=False)
 	elif quiz_id == '1b':
 		return JsonResponse(checkanswer(result, answerkey_1b), safe=False)
-	else:
-		return JsonResponse(checkanswer(result, answerkey_1c), safe=False)
-	
+
+
 def checkanswer(result, answer):
 	feedback = []
 	for i in range(len(result)):
@@ -424,14 +388,17 @@ def checkanswer(result, answer):
 			feedback.append('incorrect')
 	return feedback
 
+@login_required
 def final(request):
 	return render(request, 'sunscreen/final.html')
 
+@login_required
 def checkfinal(request):
 	result = json.loads(request.POST['data'])
 	answerkey = [['f1', ['f1a', 'f1d']], ['f2', ['f2b', 'f2c']], ['f3', 'f3b'], ['f4', 'f4a'], ['f5', 'f5a'], ['f6', 'f6b']]	
 	return JsonResponse(checkanswer(result, answerkey), safe=False)
 
+@login_required
 def end(request):
 	user = UserProfile.objects.get(user=request.user.id)
 	user.progress = '5'

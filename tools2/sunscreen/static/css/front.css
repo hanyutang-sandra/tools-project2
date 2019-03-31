@@ -115,5 +115,15 @@ html{
 	100% {right: 75%}
 }
 
+.end{
+	color: black !important;
+	font-size: 1.5rem !important;
+}
+
+.author{
+	display: inline-block;
+	font-size: 1.1rem !important;
+	text-align: left;
+}
 
 

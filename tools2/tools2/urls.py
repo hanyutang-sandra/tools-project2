@@ -47,21 +47,15 @@ urlpatterns = [
     re_path(r'^get-expert-stream-changes$', sunscreen.views.get_expert_stream_changes, name='get-expert-stream-changes'),
     re_path(r'^get-expert-stream-changes/(?P<time>.+)$', sunscreen.views.get_expert_stream_changes, name='get-expert-stream-changes'),
 
-    re_path(r'^get-group-stream-posts$', sunscreen.views.get_group_stream_posts, name='get-group-stream-posts'),
-    re_path(r'^get-group-stream-changes$', sunscreen.views.get_group_stream_changes, name='get-group-stream-changes'),
-    re_path(r'^get-group-stream-changes/(?P<time>.+)$', sunscreen.views.get_group_stream_changes, name='get-group-stream-changes'),
+    re_path(r'^get-group-stream-posts$', sunscreen.views.get_group_stream_posts, name='get-expert-stream-posts'),
+    re_path(r'^get-group-stream-changes$', sunscreen.views.get_group_stream_changes, name='get-expert-stream-changes'),
+    re_path(r'^get-group-stream-changes/(?P<time>.+)$', sunscreen.views.get_group_stream_changes, name='get-expert-stream-changes'),
     
-    re_path(r'^get-expertcomments/(?P<post_id>\d+)$', sunscreen.views.get_expertcomments),
-    re_path(r'^get-expertcomments/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_expertcomments),
-    re_path(r'^get-expertcomment-changes/(?P<post_id>\d+)/$', sunscreen.views.get_expertcomment_changes),
-    re_path(r'^get-expertcomment-changes/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_expertcomment_changes),
-    re_path(r'^add-expertcomment/(?P<post_id>\d+)$', sunscreen.views.add_expertcomment),
-
-    re_path(r'^get-groupcomments/(?P<post_id>\d+)$', sunscreen.views.get_groupcomments),
-    re_path(r'^get-groupcomments/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_groupcomments),
-    re_path(r'^get-groupcomment-changes/(?P<post_id>\d+)/$', sunscreen.views.get_groupcomment_changes),
-    re_path(r'^get-groupcomment-changes/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_groupcomment_changes),
-    re_path(r'^add-groupcomment/(?P<post_id>\d+)$', sunscreen.views.add_groupcomment),
+    re_path(r'^get-comments/(?P<post_id>\d+)$', sunscreen.views.get_comments),
+    re_path(r'^get-comments/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_comments),
+    re_path(r'^get-comment-changes/(?P<post_id>\d+)/$', sunscreen.views.get_comment_changes),
+    re_path(r'^get-comment-changes/(?P<post_id>\d+)/(?P<time>.+)$', sunscreen.views.get_comment_changes),
+    re_path(r'^add-comment/(?P<post_id>\d+)$', sunscreen.views.add_comment),
 
     re_path(r'^logout$', auth_views.logout_then_login, name='logout'),
 ]

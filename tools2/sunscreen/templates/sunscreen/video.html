@@ -25,7 +25,7 @@
 <div class='card group'>
   <p>You have been put into a Jigsaw group! Your group members are: 
   {% for g in group %}
-  {{g.username}}
+  {{g.username}} &nbsp;
   {% endfor %}
   </p>
   <p>And don't forget, your role is <b class='role'>  {{role}}</b></p>
@@ -72,6 +72,7 @@
         <span>UVC</span>
       </label>
     </p>
+    <a class='btn quiz_btn'>Submit</a>
   </div>
   <div class='quiz' id='a2'>
     <p>What is the main damage UVA does to the skin?</p>
@@ -87,6 +88,7 @@
         <span>It can speed up the aging and wrinkle process of your skin.</span>
       </label>
     </p>
+    <a class='btn quiz_btn'>Submit</a>
   </div>
 </div>
 <div id="playera"></div>

@@ -98,28 +98,30 @@ def join(request):
 	done = UserProfile.objects.filter(progress = '4')
 	inprogress = len(UserProfile.objects.all()) - len(notjoin) - len(done)
 
-	if inprogress >= 12:
-		context['progress'] = 'full'
-		return render(request, 'sunscree/join.html', context)
-
 	if status == '0':
 		context['progress'] = 'notjoin'
 		user.role = find_role()
 		user.save()
-		#print(UserProfile.objects.filter(role = 'a'))
+		context['role'] = user.role
 		print(user.role)
+		print(user.group.all())
+		print(UserProfile.objects.all())
 	elif status == '5':
 		context['progress'] = 'done'
 	else:
 		context['progress'] = 'inprogress'
 		if status == '1':
 			context['section_id'] = "1"
+			context['sec_word'] = "You are currently watching the common video"
 		elif status == '2':
 			context['section_id'] = "2"
+			context['sec_word'] = "You are currently watching your individual video"
 		elif status == '3':
 			context['section_id'] = "3"
+			context['sec_word'] = "You are currently in expert group dicussion"
 		elif status == '4':
 			context['section_id'] = "4"
+			context['sec_word'] = "You are currently discussing with your group members"
 	return render(request, 'sunscreen/join.html', context)
 
 def section(request, section_id):
@@ -138,45 +140,48 @@ def section(request, section_id):
 		context['id'] = ''
 		context['next'] = ''
 		if section_id == '1':
-			context['title'] = 'Section 1: Introduction'
-			context['id'] = '9Meh079xYso'
+			context['title'] = 'Section 1: Common Video'
+			context['intro'] = "Now you will watch the video, this part is accessible to all people in your group, you DON’T need to teach them this part."
+			#context['id'] = '9Meh079xYso'
 			context['next'] = 'section/2'
+			context['sec'] = '1'
 			user.progress = '1'
-			print(user.role)
+			user.save()
 			if len(find_group(request)) < 3:
-				context['error'] = 'Not enough user. Proceed at your own risk.'
+				context['error'] = 'Sorry, there are not enough people in your group yet. You can proceed and learn, but you may miss part of the content, and may not be able to do final quiz perfectly! You can refresh to see if other people have joined the course.'
+				context['role'] = user.role
 			else:
 				find_group(request)
 				user.save()
+				context['role'] = user.role
+				context['group'] = user.group.all()
 		elif section_id == '2':
 			user.progress = '2'
 			user.save()
-			print(user.role)
+			context['intro'] = "Now you will watch a video, you are the ONLY one watching this part in your group, so you ARE RESPONSIBLE TO TEACH your peer about this part afterwards."
 			if user.role == 'a':
 				context['title'] = 'Section 2a : UVA and UVB'
-				context['id'] = '7mc0Axd6Zf0'
+				#context['id'] = '7mc0Axd6Zf0'
+				context['cover'] = 'a'
 			elif user.role == 'b':
-				context['title'] = 'Section 2b: Physical Sunscreen'
-				context['id'] = 'bBfr-o5gKR0'
-			elif user.role == 'c':
-				context['title'] = 'Section 2c: Chemical Sunscreen'
-				context['id'] = 'wxI-jK7XgD4'
+				context['title'] = 'Section 2b: Physical and Chemical Sunscreen'
+				#context['id'] = 'bLdm82MA0bg'
+				context['cover'] = 'b'
 			context['next'] = 'section/3'
 		return render(request, 'sunscreen/video.html', context)
 
 def find_role():
 	num_a = len(UserProfile.objects.filter(groupped = False, role = 'a')) - 1
 	num_b = len(UserProfile.objects.filter(groupped = False, role = 'b'))
-	num_c = len(UserProfile.objects.filter(groupped = False, role = 'c'))
-	roles = {'a': num_a, 'b': num_b, 'c': num_c}
-	for x, y in roles.items():
-		new_role = list(min(roles.items(), key=lambda x: x[1]))[0]
-	return new_role
+	if num_a > num_b:
+		return 'b'
+	else:
+		return 'a'
 
 def find_group(request):
 	user_a_available =  UserProfile.objects.filter(groupped = False, role = 'a').all()
 	user_b_available =  UserProfile.objects.filter(groupped = False, role = 'b').all()
-	user_c_available =  UserProfile.objects.filter(groupped = False, role = 'c').all()
+
 	user = UserProfile.objects.get(user=request.user)
 	user_role = user.role
 	user.group.add(request.user)
@@ -184,66 +189,31 @@ def find_group(request):
 
 	if len(user_b_available) == 0:
 		return user.group.all()
-	if len(user_c_available) == 0: 
+
+	if len(user_a_available) == 0:
 		return user.group.all()
+
 	if user_role == 'a':
 		user_b = User.objects.get(id = user_b_available[0].user.id)
-		user_c = User.objects.get(id = user_c_available[0].user.id)
 
 		user.group.add(user_b)
-		user.group.add(user_c)
 		user.groupped = True
 		user.save()
 
 		user_b_available[0].group.add(request.user)
-		user_b_available[0].group.add(user_c)
 		user_b_available[0].groupped = True
 		user_b_available[0].save()
-
-
-		user_c_available[0].group.add(request.user)
-		user_c_available[0].group.add(user_b)
-		user_c_available[0].groupped = True
-		user_c_available[0].save()
 
 	elif user_role == 'b':
 		user_a = User.objects.get(id = user_a_available[0].user.id)
-		user_c = User.objects.get(id = user_c_available[0].user.id)
 
 		user.group.add(user_a)
-		user.group.add(user_c)
 		user.groupped = True
 		user.save()
 
 		user_a_available[0].group.add(request.user)
-		user_a_available[0].group.add(user_c)
 		user_a_available[0].groupped = True
 		user_a_available[0].save()
-
-
-		user_c_available[0].group.add(request.user)
-		user_c_available[0].group.add(user_a)
-		user_c_available[0].groupped = True
-		user_c_available[0].save()
-	elif user_role == 'c':
-		user_a = User.objects.get(id = user_a_available[0].user.id)
-		user_b = User.objects.get(id = user_b_available[0].user.id)
-
-		user.group.add(user_a)
-		user.group.add(user_b)
-		user.groupped = True
-		user.save()
-
-		user_a_available[0].group.add(request.user)
-		user_a_available[0].group.add(user_b)
-		user_a_available[0].groupped = True
-		user_a_available[0].save()
-
-
-		user_b_available[0].group.add(request.user)
-		user_b_available[0].group.add(user_a)
-		user_b_available[0].groupped = True
-		user_b_available[0].save()
 	
 	print(user.groupped)
 	print(user.group.all())
@@ -285,7 +255,7 @@ def group(request):
 	context['user'] = request.user
 
 	context['userlist'] = UserProfile.objects.get(user=request.user.id).group.all()
-	print(UserProfile.objects.get(user=request.user.id).group.all())
+
 	userlist=UserProfile.objects.get(user=request.user.id).group.all()
 
 	context['comment_redirect'] = 'stream'
@@ -341,14 +311,14 @@ def groupcomment(request, redirect_name, user_id, post_id):
        return redirect(reverse(redirect_name))
 
 def get_expert_stream_posts(request, time="1970-01-01T00:00+00:00"):
-	user = UserProfile.objects.get(user=request.user.id)
+	#user = UserProfile.objects.get(user=request.user.id)
 	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
 	posts = ExpertPost.get_posts_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}
 	return render(request, 'posts.json', context, content_type='application/json')
 
 def get_expert_stream_changes(request, time="1970-01-01T00:00+00:00"):
-	user = UserProfile.objects.get(user=request.user.id)
+	#user = UserProfile.objects.get(user=request.user.id)
 	max_time = ExpertPost.get_max_time_expert_stream(user=request.user)
 	posts = ExpertPost.get_changes_expert_stream(user=request.user, time=time)
 	context = {"max_time": max_time, "posts": posts}

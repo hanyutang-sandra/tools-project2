@@ -4,15 +4,23 @@
 
 {% block title %}Login{% endblock %}
 
-{% block css %}<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
+<div class='ad'>
+	<p>How Sunscreen Works</p>
+	<br>
+	<p>An cooperative learning experience</p>
+</div>
 <div class="container">
 	<div class="row">
-	    <div class="col s6 offset-s3">
+	    <div class="col s6 offset-s6">
 	      <div class="card">
 	        <div class="card-image">
-	          <img src="{% static 'site-resources/register-bg.png' %}">
+	          <img src="{% static 'site-resources/card-bg.png' %}">
 	          <span class="card-title">Login</span>
 	        </div>
 	        <div class="card-content">

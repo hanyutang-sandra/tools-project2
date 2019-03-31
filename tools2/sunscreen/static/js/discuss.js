@@ -17,7 +17,6 @@ function addComment(e) {
 }
 
 function addCommentToPost(post) {
-    console.log(post.id)
     var postDiv = $("#" + "post_" + post.id);
     var list = postDiv.find("#comment-list");
     $.get("/get-expertcomments/" + post.id).done(function(data) {
@@ -66,6 +65,7 @@ function getUpdatedPost() {
             var post = data.posts[i];
             var new_post = $(post.html);
             new_post.data("post-id", post.id);
+            new_post.find("#comment-btn").click(post, addComment);
             list.prepend(new_post);
             addCommentToPost(post);
         }
@@ -73,8 +73,8 @@ function getUpdatedPost() {
 }
 
 $(document).ready(function () {
-    $("#post-btn").click(addPost);
     populateList();
+    $("#post-btn").click(addPost);
 
     window.setInterval(getUpdatedPost, 5000);
 

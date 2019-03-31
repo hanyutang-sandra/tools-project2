@@ -1,0 +1,68 @@
+nav{
+	background-color: #80cbd3 !important;
+	padding: 0 3rem !important;
+}
+
+.group{
+	display: block;
+	padding: 1.5rem 2rem;
+	background-color: #eda536;
+	color: white;
+}
+
+.role{
+	text-transform: uppercase;
+	font-size: 1.5rem;
+}
+
+.cover.b{
+	display: none;
+	visibility: hidden;
+	width: 960px;
+	height: 640px;
+	position: absolute;
+	text-align: center;
+	margin-bottom: 10rem;
+}
+
+.quiz{
+	display: none;
+	visibility: hidden;
+	text-align: left;
+	margin-top: 10rem;
+
+}
+
+.quiz_btn{
+	display: none;
+}
+
+#playerb{
+	display: block;
+}
+
+.cover.a{
+	display: none;
+	visibility: hidden;
+	width: 960px;
+	height: 640px;
+	position: absolute;
+	text-align: center;
+	margin-bottom: 10rem;
+}
+
+.quiz{
+	display: none;
+	visibility: hidden;
+	text-align: left;
+	margin-top: 10rem;
+
+}
+
+.quiz_btn{
+	display: none;
+}
+
+#playera{
+	display: block;
+}

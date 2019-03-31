@@ -9,10 +9,9 @@
 {% block navbar %}
 <nav>
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Cooperative Learning</a>
+      <a href="#" class="brand-logo">How Sunscreen Works</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="../{{next}}">Next task</a></li>
-        <!--<li><a href="sass.html">My Profile</a></li>-->
         <li><a href="../logout">Logout</a></li>
       </ul>
     </div>
@@ -20,18 +19,149 @@
 {% endblock %}
 
 {% block content %}
-<div class="title">
+
+
+{% if group %}
+<div class='card group'>
+  <p>You have been put into a Jigsaw group! Your group members are: 
+  {% for g in group %}
+  {{g.username}}
+  {% endfor %}
+  </p>
+  <p>And don't forget, your role is <b class='role'>  {{role}}</b></p>
+</div>
+{% endif %}
+
+{% if error %}
+<div class='card group'>
+  <p>{{error}}</p>
+  <p>Don't forget, your role is <b class='role'>  {{role}}</b></p>
+</div>
+{% endif %}
+
+
+
+<div class="intro">
 	<h3>{{title}}</h3>
+  <p>{{intro}}</p>
 </div>
 
-<div class="video">
-	<iframe id="iframe"
-        	width="960" height="540"
-        	src="https://www.youtube.com/embed/{{id}}"
-        	frameborder="0"
-        	style="border: solid 4px #37474F">
-    </iframe>
-</div>
+{% if sec == '1' %}
+<div id="playercommon"></div>
+{% endif %}
 
-<p>{{error}}</p>
+{% if cover == 'a' %}
+<div class='cover a card'>
+  <div class='quiz' id='a1'>
+    <p>What kind of ultraviolet light exist everyday no matter it is sunny or rainy</p>
+    <p>
+      <label>
+        <input name="a1a" type="radio" />
+        <span>UVA</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="a1b" type="radio" />
+        <span>UVB</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="a1c" type="radio" />
+        <span>UVC</span>
+      </label>
+    </p>
+  </div>
+  <div class='quiz' id='a2'>
+    <p>What is the main damage UVA does to the skin?</p>
+    <p>
+      <label>
+        <input name="a2a" type="radio" />
+        <span>It can cause your skin to redden and get sunburnt</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="a2b" type="radio" />
+        <span>It can speed up the aging and wrinkle process of your skin.</span>
+      </label>
+    </p>
+  </div>
+</div>
+<div id="playera"></div>
+{% endif %}
+
+{% if cover == 'b' %}
+<div class='cover b card'>
+  <div class='quiz' id='b1'>
+    <p>Which one do you think physical sunscreen works like?</p>
+    <p>
+      <label>
+        <input name="b1a" type="radio" />
+        <span>Mirror</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="b1b" type="radio" />
+        <span>Sponge</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="b1c" type="radio" />
+        <span>Wall</span>
+      </label>
+    </p>
+    <a class='btn quiz_btn'>Submit</a>
+  </div>
+  <div class='quiz' id='b2'>
+    <p>Which one do you think is better for skin health?</p>
+    <p>
+      <label>
+        <input name="b2a" type="radio" />
+        <span>Chemical Sunscreen</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="b2b" type="radio" />
+        <span>Physical Sunscreen</span>
+      </label>
+    </p>
+    <a class='btn quiz_btn'>Submit</a>
+  </div>
+  <div class='quiz' id='b3'>
+    <p>Which one do you think feels better to use?</p>
+    <p>
+      <label>
+        <input name="b3a" type="radio" />
+        <span>Chemical Sunscreen</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="b3b" type="radio" />
+        <span>Physical Sunscreen</span>
+      </label>
+    </p>
+    <a class='btn quiz_btn'>Submit</a>
+  </div>
+</div>
+<div id="playerb"></div>
+{% endif %}
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+{% if sec == '1' %}
+<script src="{% static 'js/videocommon.js' %}"></script>
+{% endif %}
+{% if cover == 'a' %}
+<script src="{% static 'js/videoa.js' %}"></script>
+{% endif %}
+{% if cover == 'b' %}
+<script src="{% static 'js/videob.js' %}"></script>
+{% endif %}
 {% endblock %}

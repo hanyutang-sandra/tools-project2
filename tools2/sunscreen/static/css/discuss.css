@@ -147,6 +147,11 @@ nav{
   transition: 0.7s ease;
 }
 
+.error{
+  display: inline-block;
+  float: right;
+}
+
 
 
 

@@ -97,6 +97,7 @@ function handleAlert(){
     $('.ac_q2').children('.btn').click(function(){
         if ($(this).index('.btn') === 2){
             $('p').css('display', 'none')
+            $('.alert-card').text('You are good to go!')
             $('.pass').css('display', 'block').siblings('.card-action').css('display', 'none')
         }else if ($(this).index('.btn') === 3){
             $('.al2').css('display', 'block').siblings('p').css('display', 'none')

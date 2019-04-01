@@ -372,7 +372,7 @@ def checkquiz(request, quiz_id):
 	result = json.loads(request.POST['data'])
 	quiz_id = str(request).split('/')[2].split("'")[0]
 	answerkey_1a = [['1a1', '1a1a'], ['1a2', '1a2a'], ['1a3', '1a3b']]
-	answerkey_1b = [['1b1', '1b1b'], ['1b2', '1b2d'], ['1b3', '1b3a'], ['1b4', '1b4b']]
+	answerkey_1b = [['1b1', '1b1c'], ['1b2', '1b2c'], ['1b3', '1b3a'], ['1b4', '1b4b']]
 	if quiz_id == '1a':
 		return JsonResponse(checkanswer(result, answerkey_1a), safe=False)
 	elif quiz_id == '1b':

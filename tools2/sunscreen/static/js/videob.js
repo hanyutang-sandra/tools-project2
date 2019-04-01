@@ -37,7 +37,7 @@ const quiz1 = {
   id: '#b1',
   answerkey: 'b1a',
   begin: 29.5,
-  incorrect: 57.5,
+  incorrect: 55,
   next: 103
 }
 
@@ -77,7 +77,7 @@ const quiz2 = {
   id: '#b2',
   answerkey: 'b2b',
   begin: 167,
-  incorrect: 186,
+  incorrect: 184,
   next: 226,
 }
 
@@ -115,7 +115,7 @@ const quiz3 = {
   id: '#b3',
   answerkey: 'b3a',
   begin: 233,
-  incorrect: 246
+  incorrect: 244.5
 }
 
 function displayQuiz3(){

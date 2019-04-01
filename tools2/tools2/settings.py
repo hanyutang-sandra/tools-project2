@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ['radiant-basin-41966.herokuapp.com']
+#ALLOWED_HOSTS = ['localhost']
 
 
 
